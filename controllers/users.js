@@ -10,7 +10,6 @@ const ForbiddenError = require('../errors/forbidden-err');
 const ConflictError = require('../errors/conflict-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 
-// Возвращает информацию о пользователе (email и имя)
 exports.getMe = (req, res, next) => {
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer ')) {
@@ -28,7 +27,7 @@ exports.getMe = (req, res, next) => {
   };
 
   if (!isAuthorized(token)) {
-    throw new ForbiddenError('Доступ запрещен123');
+    throw new ForbiddenError('Доступ запрещен');
   }
 
   return User.findById(req.user._id)
@@ -41,7 +40,6 @@ exports.getMe = (req, res, next) => {
     .catch(next);
 };
 
-// Обновляет информацию о пользователе (email и имя)
 exports.updateProfile = (req, res, next) => {
   const { name, email } = req.body;
   const owner = req.user._id;
@@ -65,7 +63,6 @@ exports.updateProfile = (req, res, next) => {
     .catch(next);
 };
 
-// Создает нового пользователя
 exports.registration = (req, res, next) => {
   const { name, email, password } = req.body;
   bcrypt
@@ -87,7 +84,6 @@ exports.registration = (req, res, next) => {
     .catch(next);
 };
 
-// Логин
 exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
