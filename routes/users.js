@@ -1,14 +1,11 @@
-const express = require('express');
+const usersRoute = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { registration, login } = require('../controllers/users');
-const auth = require('../middlewares/auth');
-
 const {
   getMe,
   updateProfile,
 } = require('../controllers/users');
-
-const usersRoute = express.Router();
+const auth = require('../middlewares/auth');
 
 usersRoute.post(
   '/signup',
@@ -36,11 +33,12 @@ usersRoute.post(
 );
 
 usersRoute.use(auth);
-usersRoute.get('/me', getMe);
-usersRoute.patch('/me', celebrate({
+usersRoute.get('/users/me', getMe);
+usersRoute.patch('/users/me', celebrate({
   body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
-    name: Joi.string().min(2).max(30).required(),
   }),
-  updateProfile,
-}));
+}), updateProfile);
+
+module.exports = usersRoute;

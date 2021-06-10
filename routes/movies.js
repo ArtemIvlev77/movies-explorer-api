@@ -1,10 +1,8 @@
-const express = require('express');
+const moviesRoute = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const validator = require('validator');
 const auth = require('../middlewares/auth');
 const { getMovies, postMovie, deleteMovie } = require('../controllers/movies');
-
-const moviesRoute = express.Router();
 
 moviesRoute.use(auth);
 
@@ -34,7 +32,7 @@ moviesRoute.post(
           }
           return helpers.message('Трейлер должен быть передан ссылкой');
         }),
-      thumbnail: Joi.string().requider.custom((value, helpers) => {
+      thumbnail: Joi.string().required().custom((value, helpers) => {
         if (validator.isURL(value)) {
           return value;
         }
@@ -44,16 +42,18 @@ moviesRoute.post(
       nameRU: Joi.string().required(),
       nameEN: Joi.string().required(),
     }),
-    postMovie,
   }),
+  postMovie,
 );
 
 moviesRoute.delete(
   '/movies/:movieId',
   celebrate({
     params: Joi.object().keys({
-      movieId: Joi.sting().length(24).hex(),
+      movieId: Joi.string().length(24).hex(),
     }),
   }),
   deleteMovie,
 );
+
+module.exports = moviesRoute;

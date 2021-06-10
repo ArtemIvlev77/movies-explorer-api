@@ -26,7 +26,7 @@ exports.login = (req, res, next) => {
     .catch(next);
 };
 
-exports.registartion = (req, res, next) => {
+exports.registration = (req, res, next) => {
   const { email, password, name } = req.body;
   bcrypt
     .hash(password, 10)
@@ -78,11 +78,11 @@ exports.getMe = (req, res, next) => {
 };
 
 exports.updateProfile = (req, res, next) => {
-  const { email, name } = req.body;
+  const { name, email } = req.body;
   const owner = req.user._id;
   return User.findByIdAndUpdate(
     owner,
-    { email, name },
+    { name, email },
     { new: true, runValidators: true },
   )
     .then((user) => {
@@ -93,8 +93,9 @@ exports.updateProfile = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Введены не валидные данные');
+        throw new BadRequestError('Невалидные данные');
       }
+      throw new ConflictError('Произошел конфликт');
     })
     .catch(next);
 };
