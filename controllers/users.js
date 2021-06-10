@@ -48,7 +48,7 @@ exports.updateProfile = (req, res, next) => {
   return User.findByIdAndUpdate(
     owner,
     { name, email },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .then((user) => {
       if (!user) {
@@ -70,13 +70,11 @@ exports.registration = (req, res, next) => {
   const { name, email, password } = req.body;
   bcrypt
     .hash(password, 10)
-    .then((hash) =>
-      User.create({
-        name,
-        email,
-        password: hash,
-      })
-    )
+    .then((hash) => User.create({
+      name,
+      email,
+      password: hash,
+    }))
     .then((user) => res.status(200).send({ mail: user.email }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -97,7 +95,7 @@ exports.login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id },
         NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
-        { expiresIn: '7d' }
+        { expiresIn: '7d' },
       );
       return res.send({ jwt: token });
     })
