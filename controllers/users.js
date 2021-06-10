@@ -26,7 +26,7 @@ exports.login = (req, res, next) => {
     .catch(next);
 };
 
-exports.signUp = (req, res, next) => {
+exports.registartion = (req, res, next) => {
   const { email, password, name } = req.body;
   bcrypt
     .hash(password, 10)
