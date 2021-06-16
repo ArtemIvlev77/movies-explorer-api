@@ -3,7 +3,7 @@
 
 API дипломного проекта по поиску фильмов.
 
-Ip адрес сервера - api.movies-ivlev.nomoredomains.club
+Адрес сервера - https://api.movies-ivlev.nomoredomains.club
 
 
 

@@ -1,5 +1,4 @@
 const BadRequestError = require('../errors/bad-request-err');
-const ForbiddenError = require('../errors/forbidden-err');
 const NotFoundError = require('../errors/not-found-err');
 const { Movie } = require('../models/movie');
 
@@ -16,6 +15,8 @@ exports.postMovie = (req, res, next) => {
     description,
     image,
     trailer,
+    thumbnail,
+    movieId,
     nameRU,
     nameEN,
   } = req.body;
@@ -28,29 +29,31 @@ exports.postMovie = (req, res, next) => {
     description,
     image,
     trailer,
+    thumbnail,
+    owner,
+    movieId,
     nameRU,
     nameEN,
-    owner,
   })
     .then((movie) => res.send({ data: movie }))
     .catch(next);
 };
 
 exports.deleteMovie = (req, res, next) => {
-  const owner = req.user._id;
-  Movie.findOne({ _id: req.params.movieId })
-    .orFail(() => new NotFoundError('Фильм с таким id не найден'))
+  Movie.findById(req.params.movieId)
     .then((movie) => {
-      if (!movie.owner.equels(owner)) {
-        next(new ForbiddenError('Нельзя удалить чужой фильм'));
-      } else {
-        Movie.deleteOne(movie)
-          .then(() => res.status(200).send({ message: 'Фильм удалён' }));
+      if (!movie || movie.owner.toString() !== req.user._id) {
+        throw new NotFoundError('Нельзя удалить чужой фильм');
       }
+      movie.remove()
+        .then(() => {
+          res.send({ message: 'Фильм удалён' });
+        })
+        .catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequestError('Данные не прошли валидацию'));
+        throw new BadRequestError('Данные не прошли валидацию');
       }
       throw err;
     })

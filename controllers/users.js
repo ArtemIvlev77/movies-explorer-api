@@ -6,7 +6,6 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
-const ForbiddenError = require('../errors/forbidden-err');
 const ConflictError = require('../errors/conflict-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 
@@ -35,10 +34,7 @@ exports.updateProfile = (req, res, next) => {
       }
       res.send(user);
     })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new BadRequestError('Невалидные данные');
-      }
+    .catch(() => {
       throw new ConflictError('Произошел конфликт');
     })
     .catch(next);
@@ -59,8 +55,9 @@ exports.registration = (req, res, next) => {
         throw new BadRequestError('Данные не прошли валидацию');
       }
       if (err.name === 'MongoError' || err.code === '11000') {
-        throw new ConflictError('Такой емейл или имя уже зарегистрированы');
+        throw new ConflictError('Такой емейл уже зарегистрирован');
       }
+      throw err;
     })
     .catch(next);
 };
