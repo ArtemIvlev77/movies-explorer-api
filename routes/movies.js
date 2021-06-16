@@ -14,7 +14,7 @@ moviesRoute.post(
       country: Joi.string().required(),
       director: Joi.string().required(),
       duration: Joi.number().required(),
-      year: Joi.string().required(),
+      year: Joi.number().required(),
       description: Joi.string().required(),
       image: Joi.string()
         .required()

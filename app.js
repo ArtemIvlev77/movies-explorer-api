@@ -21,8 +21,7 @@ mongoose
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true,
-  })
-  .then(() => console.log('Connected to DB'));
+  });
 
 app.use(helmet());
 app.use(express.json());
@@ -33,6 +32,4 @@ app.use(errorLogger);
 app.use(errors());
 app.use(mainErrorHandler);
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});
+app.listen(PORT);
