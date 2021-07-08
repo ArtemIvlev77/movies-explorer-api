@@ -2,9 +2,12 @@ const BadRequestError = require('../errors/bad-request-err');
 const NotFoundError = require('../errors/not-found-err');
 const { Movie } = require('../models/movie');
 
-exports.getMovies = (req, res, next) => Movie.find({})
-  .then((movies) => res.status(200).send(movies))
-  .catch(next);
+exports.getMovies = (req, res, next) => {
+  const owner = req.user._id;
+  Movie.find({ owner })
+    .then((movies) => res.status(200).send(movies))
+    .catch(next);
+};
 
 exports.postMovie = (req, res, next) => {
   const {
@@ -45,7 +48,8 @@ exports.deleteMovie = (req, res, next) => {
       if (!movie || movie.owner.toString() !== req.user._id) {
         throw new NotFoundError('Нельзя удалить чужой фильм');
       }
-      movie.remove()
+      movie
+        .remove()
         .then(() => {
           res.send({ message: 'Фильм удалён' });
         })

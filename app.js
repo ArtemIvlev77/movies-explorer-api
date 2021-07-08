@@ -18,7 +18,7 @@ const { PORT = 3000 } = process.env;
 app.use(cors());
 
 mongoose
-  .connect(NODE_ENV === 'production' ? BASE_URL : 'mongodb://localhost:27017/movies-explorer', {
+  .connect(NODE_ENV === 'production' ? BASE_URL : '', {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,

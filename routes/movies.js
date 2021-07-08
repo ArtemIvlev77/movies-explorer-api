@@ -6,7 +6,7 @@ const { getMovies, postMovie, deleteMovie } = require('../controllers/movies');
 
 moviesRoute.use(auth);
 
-moviesRoute.get('/', getMovies);
+moviesRoute.get('/movies', getMovies);
 moviesRoute.post(
   '/movies',
   celebrate({
