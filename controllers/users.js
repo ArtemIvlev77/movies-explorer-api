@@ -8,9 +8,29 @@ const NotFoundError = require('../errors/not-found-err');
 const BadRequestError = require('../errors/bad-request-err');
 const ConflictError = require('../errors/conflict-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
+const ForbiddenError = require('../errors/forbidden-err');
 
 exports.getMe = (req, res, next) => {
-  User.findById(req.user._id)
+  const { authorization } = req.headers;
+  if (!authorization || !authorization.startsWith('Bearer ')) {
+    return res.status(401).send({ message: 'Нет доступа' });
+  }
+
+  const token = authorization.replace('Bearer ', '');
+
+  const isAuthorized = () => {
+    try {
+      return jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return false;
+    }
+  };
+
+  if (!isAuthorized(token)) {
+    throw new ForbiddenError('Доступ запрещен');
+  }
+
+  return User.findById(req.user._id)
     .then((user) => {
       if (!user) {
         next(new NotFoundError('Нет пользователя с таким id'));
