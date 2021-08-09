@@ -3,8 +3,7 @@
 
 API дипломного проекта по поиску фильмов.
 
-Доменное имя api - https://api.movies-ivlev.nomoredomains.club
-ip - адрес сервера:  84.201.157.20
+Доменное имя api -  https://safe-eyrie-18429.herokuapp.com/
 
 
 
